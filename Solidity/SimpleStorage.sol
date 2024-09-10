@@ -46,7 +46,7 @@ contract SimpleStorage {
     // In case if it is left without specifying any values then it becomes a dynamic array and can take any number of arbitary values
     Person[] public people;
 
-    function store(uint256 _favoriteNumber) public {
+    function store(uint256 _favoriteNumber) public virtual {
         // Gas used -> 30618
         favoriteNumber = _favoriteNumber; 
 
