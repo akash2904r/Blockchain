@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 
-// Uses 0.8.8 version only
-pragma solidity 0.8.8;
+// Uses any version that is newer than 0.8.8 or 0.8.8
+pragma solidity ^0.8.8; 
 
-// Uses any version that is newer than 0.8.7 or 0.8.7
-// pragma solidity ^0.8.7; 
+// Uses 0.8.8 version only
+// pragma solidity 0.8.8;
 
 // Uses any version that is between 0.8.7 and 0.9.0
 // pragma solidity >=0.8.7 <0.9.0; 
