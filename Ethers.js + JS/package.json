@@ -1,3 +1,10 @@
 {
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "ethers": "^6.13.4",
+    "solc": "^0.8.28"
+  },
+  "scripts": {
+    "compile": "solcjs --bin --abi --include-path node_modules/ --base-path . -o . SimpleStorage.sol"
+  }
 }
