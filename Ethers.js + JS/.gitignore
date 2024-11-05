@@ -1,3 +1,4 @@
 .vscode
 node_modules
 SimpleStorage_sol_SimpleStorage.*
+.env

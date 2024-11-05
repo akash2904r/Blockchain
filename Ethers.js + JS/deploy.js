@@ -1,13 +1,11 @@
 const fs = require("fs");
 const ethers = require("ethers");
 
+require("dotenv").config();
+
 async function main() {
-    // http://127.0.0.1:7545  => Ganache RPC URL
-    const provider = new ethers.JsonRpcProvider("http://127.0.0.1:7545");
-    const wallet = new ethers.Wallet(
-        "8a325d054c0c4e3bb5185965c4b6e4ae4fb4c53267103ba19e90b030e701dd8c",
-        provider
-    );
+    const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY, provider);
 
     const abi = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.abi", "utf-8");
     const binary = fs.readFileSync("./SimpleStorage_sol_SimpleStorage.bin", "utf-8");
@@ -24,7 +22,7 @@ async function main() {
     const transactionReceipt = await contract.deploymentTransaction().wait(1);
     // Else returns the transaction response for something like this
     // const transactionReceipt = await contract.deploymentTransaction();
-    
+
 
     // console.log("Deploying with transaction data !!!");
 
@@ -48,6 +46,18 @@ async function main() {
     // // Use something like this, for a single line
     // // const sentTxResponse = (await wallet.sendTransaction(tx)).wait(1)
     // console.log(sentTxResponse)
+
+
+    /************** Interacting With Contract **************/
+
+    const currentFavouriteNumber = await contract.retrieve();
+    // currentFavouriteNumber is a BigNumber. Therefore by using toString() we can make it easy to read
+    console.log(`Current Favourite Number: ${currentFavouriteNumber.toString()}`);
+
+    const txResponse = await contract.store("5");
+    const txReceipt = await txResponse.wait(1);
+    const updatedFavouriteNumber = await contract.retrieve();
+    console.log(`Updated Favourite Number: ${updatedFavouriteNumber.toString()}`)
 }
 
 main()
