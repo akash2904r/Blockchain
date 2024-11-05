@@ -2,3 +2,4 @@
 node_modules
 SimpleStorage_sol_SimpleStorage.*
 .env
+.encryptedKey.json
