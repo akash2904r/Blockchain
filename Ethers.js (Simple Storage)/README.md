@@ -110,6 +110,6 @@ Finally, you can input the password while you are running the application for a 
 
 ---
 
-<span style="font-size:20px;">**Thank you !**</span>
+<span style="font-size:32px;">**Thank you !**</span>
 
 Make sure to leave a star ⭐
