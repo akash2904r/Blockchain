@@ -8,12 +8,15 @@ async function main() {
 
     console.log(`Deployed contract to: ${simpleStorage.target}`);
 
+    // Verifying only if the network used is sepolia testnet
     if (network.config.chainId === 11155111 && process.env.ETHERSCAN_API_KEY) {
         console.log("Waiting for block transactions...");
         await simpleStorage.deploymentTransaction().wait(6);
         await verify(simpleStorage.target, []);
     }
 
+    /**************** Interacting with the contract ****************/
+    
     const currentValue = await simpleStorage.retrieve();
     console.log(`Current Value is: ${currentValue}`)
 
@@ -24,6 +27,7 @@ async function main() {
     console.log(`Updated Value is: ${updatedValue}`)
 }
 
+// Programmatically verifying the contract on etherscan
 const verify = async (contractAddress, args) => {
     console.log("Verifying contract...");
 
