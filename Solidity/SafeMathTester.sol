@@ -3,7 +3,7 @@ pragma solidity ^0.6.0;
 
 contract SafeMathTester {
     /*
-        - In solidity versions less than and equal to 0.7.6, this is unchecked
+        - In solidity versions less than and equal to 0.6.7, this is unchecked
         - In case, if the add method is called then the value is updated to 0 from 255
         - This happens because
             - The biggest number that can be stored in a uint8 is nothing but 255
