@@ -3,6 +3,8 @@ const { network } = require("hardhat");
 const { verify } = require("../utils/verify");
 const { networkConfig, developmentChains } = require("../helper-hardhat-config");
 
+require("dotenv").config();
+
 // const { getNamedAccounts, deployments } = hre
 // hre => Hardhat Runtime Environment
 module.exports = async ({ getNamedAccounts, deployments }) => {
