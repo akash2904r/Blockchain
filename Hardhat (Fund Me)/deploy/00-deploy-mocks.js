@@ -6,7 +6,7 @@ const {
 } = require("../helper-hardhat-config");
 
 // Mocking --> If a contract doesn't exist, we deploy a minimal version of it for our local testing
-// Since our local network (i.e., hardhat or localhost) does have a AggregatorV3Interface deployed, we manually deploy a mock
+// Since our local network (i.e., hardhat or localhost) doesn't have a AggregatorV3Interface deployed, we manually deploy a mock
 module.exports = async ({ getNamedAccounts, deployments }) => {
     const { deploy, log } = deployments;
     const { deployer } = await getNamedAccounts();
