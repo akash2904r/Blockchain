@@ -8,10 +8,10 @@ require("dotenv").config();
 
 /** @type import('hardhat/config').HardhatUserConfig */
 
-const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL;
-const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY;
-const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY;
+const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "";
+const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
+const ETHERSCAN_API_KEY = process.env.ETHERSCAN_API_KEY || "";
+const COINMARKETCAP_API_KEY = process.env.COINMARKETCAP_API_KEY || "";
 
 module.exports = {
   defaultNetwork: "hardhat",
@@ -43,7 +43,7 @@ module.exports = {
   namedAccounts: {
     deployer: {
       default: 0, // This will by default take the first account as deployer
-      11155111: 1, // This means, on the sepolia network the second account is taken as deployer
+      // 11155111: 1, // This means, on the sepolia network the second account is taken as deployer
     },
     user: {
       default: 1, // This on the other hand would take the second account as user by default
