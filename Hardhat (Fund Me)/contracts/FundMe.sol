@@ -4,8 +4,13 @@ pragma solidity ^0.8.8;
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "./PriceConverter.sol";
 
-error NotOwner();
+error FundMe__NotOwner();   // Better practice i.e., using the contract name before the error name
 
+/** @title A contract for crowd funding
+ *  @author Akash
+ *  @notice This contract is a demo for a sample funding contract
+ *  @dev This contract implements price feeds as our library i.e., PriceConverter
+ */
 contract FundMe {
     using PriceConverter for uint256;
 
@@ -17,13 +22,24 @@ contract FundMe {
     address public /* immutable */ owner;
     AggregatorV3Interface public priceFeed;
 
+    /* Functions Order:
+     *  constructor
+     *  receive
+     *  fallback
+     *  external
+     *  public
+     *  internal
+     *  private
+     *  view / pure
+     */
+
     constructor(address priceFeedAddress) {
         owner = msg.sender;
         priceFeed = AggregatorV3Interface(priceFeedAddress);
     }
 
     modifier onlyOwner {
-        if(msg.sender == owner) revert NotOwner();
+        if(msg.sender == owner) revert FundMe__NotOwner();
         _;
     }
 
