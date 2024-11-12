@@ -35,4 +35,61 @@ describe("FundMe", function () {
             assert.equal(funder, deployer);
         })
     })
+
+    describe("withdraw", function () {
+        beforeEach(async function () {
+            await fundMe.fund({ value: sendValue });
+        })
+        it("Withdraw ETH from a single funder", async function () {
+            // Intial balance of both FundMe contract and deployer
+            const initialFundMeBalance = await fundMe.provider.getBalance(fundMe.address);
+            const initialDeployerBalance = await fundMe.provider.getBalance(deployer);
+            // Withdrawing ETH from the FundMe contract
+            const txResponse = await fundMe.withdraw();
+            const txReceipt = await txResponse.wait(1);
+            const { gasUsed, effectiveGasPrice } = txReceipt;
+            const gasCost = gasUsed.mul(effectiveGasPrice);
+            // Final balance of both FundMe contract and deployer
+            const finalFundMeBalance = await fundMe.provider.getBalance(fundMe.address);
+            const finalDeployerBalance = await fundMe.provider.getBalance(deployer);
+            // Assertions
+            assert.equal(finalFundMeBalance, 0);
+            assert.equal(
+                initialFundMeBalance.add(initialDeployerBalance).toString(),
+                finalDeployerBalance.add(gasCost).toString()
+            );
+        })
+        it("Allows us to withdraw funds funded by multiple funders", async function () {
+            // Fetching the multiple accounts provided by hardhat
+            const accounts = await ethers.getSigners();
+            // Looping through the accounts and funding the contract
+            for (let i = 1; i < 6; i++) {
+                const fundMeConnectedContract = await fundMe.connect(accounts[i]);
+                await fundMeConnectedContract.fund({ value: sendValue });
+            }
+            // Intial balance of both FundMe contract and deployer
+            const initialFundMeBalance = await fundMe.provider.getBalance(fundMe.address);
+            const initialDeployerBalance = await fundMe.provider.getBalance(deployer);
+            // Withdrawing ETH from the FundMe contract
+            const txResponse = await fundMe.withdraw();
+            const txReceipt = await txResponse.wait(1);
+            const { gasUsed, effectiveGasPrice } = txReceipt;
+            const gasCost = gasUsed.mul(effectiveGasPrice);
+            // Final balance of both FundMe contract and deployer
+            const finalFundMeBalance = await fundMe.provider.getBalance(fundMe.address);
+            const finalDeployerBalance = await fundMe.provider.getBalance(deployer);
+            // Assertions
+            assert.equal(finalFundMeBalance, 0);
+            assert.equal(
+                initialFundMeBalance.add(initialDeployerBalance).toString(),
+                finalDeployerBalance.add(gasCost).toString()
+            );
+            // Checking whether the funders array is updated properly
+            await expect(fundMe.funders(0)).to.be.reverted;
+            // Checking whether the amount funded mapping is updated properly
+            for (let i = 1; i < 6; i++) {
+                assert(await fundMe.addressToAmountFunded(accounts[i].address), 0);
+            }
+        })
+    })
 })
