@@ -14,6 +14,21 @@ error FundMe__NotOwner();   // Better practice i.e., using the contract name bef
 contract FundMe {
     using PriceConverter for uint256;
 
+    /*
+        Solidity Best Practices
+        
+        * Whenever declaring a state variable, it is recommended to set it's name with a prefix of s_ (for e.g., s_funders, s_addressToAmountFunded etc.)
+        * Whenever declaring constant variables, set it's name in caps
+        * Similar to state variables, immutable variables name are recommended to start with a prefix of i_ (for e.g., i_owner)
+        
+        Gas Optimization tips
+
+        * State variables like funders, addressToAmountFunded, priceFeed are not necessary to have a public visibility
+        * We could just set the visibility to private and create a getter function for them
+        * The owner is not a necessary data for the users, so we could just keep it's visibility private without any getter function for it
+        * We could use custom errors instead of require() to optimize the gas
+    */
+
     uint256 public constant MINIMUM_USD = 50 * 1e18;
 
     address[] public funders;
@@ -59,6 +74,27 @@ contract FundMe {
         (bool callSuccess, ) = payable(msg.sender).call{ value: address(this).balance }("");
         require(callSuccess, "Call failed !!!");
     }
+
+    /*
+        This withdraw function costs less gas when compared to the above function
+        
+        REASON: In the above function we are trying to read from the storage for every iteration,
+        but the below function stores the funders array to memory and accesses data for this copy.
+        Therefore reducing the gas used
+
+        function cheaperWithdraw() public onlyOwner {
+            address[] memory fndrs = funders;
+
+            for(uint256 funderIndex = 0; funderIndex < fndrs.length; funderIndex++) {
+                address funder = fndrs[funderIndex];
+                addressToAmountFunded[funder] = 0;
+            }
+            funders = new address[](0);
+
+            (bool callSuccess, ) = payable(msg.sender).call{ value: address(this).balance }("");
+            require(callSuccess, "Call failed !!!");
+        }
+    */
 
     receive() external payable { 
         fund();
