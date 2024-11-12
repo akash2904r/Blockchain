@@ -19,7 +19,7 @@ contract FundMe {
     address[] public funders;
     mapping(address => uint256) public addressToAmountFunded;
 
-    address public /* immutable */ owner;
+    address public immutable i_owner;
     AggregatorV3Interface public priceFeed;
 
     /* Functions Order:
@@ -34,12 +34,12 @@ contract FundMe {
      */
 
     constructor(address priceFeedAddress) {
-        owner = msg.sender;
+        i_owner = msg.sender;
         priceFeed = AggregatorV3Interface(priceFeedAddress);
     }
 
     modifier onlyOwner {
-        if(msg.sender == owner) revert FundMe__NotOwner();
+        if(msg.sender != i_owner) revert FundMe__NotOwner();
         _;
     }
 
