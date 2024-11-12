@@ -91,5 +91,11 @@ describe("FundMe", function () {
                 assert(await fundMe.addressToAmountFunded(accounts[i].address), 0);
             }
         })
+        // Testing the onlyOwner modifier
+        it("Allows only the owner to withdraw", async function () {
+            const accounts = await ethers.getSigners();
+            const fundMeConnectedContract = await fundMe.connect(accounts[1]);
+            await expect(fundMeConnectedContract.withdraw()).to.be.revertedWith("FundMe__NotOwner");
+        })
     })
 })
