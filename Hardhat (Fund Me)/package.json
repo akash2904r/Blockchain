@@ -4,7 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx hardhat test",
+    "test:staging": "npx hardhat test --network sepolia",
+    "lint": "npx solhint contracts/**/*.sol",
+    "lint:fix": "npx solhint contracts/**/*.sol --fix",
+    "coverage": "npx hardhat coverage"
   },
   "keywords": [],
   "author": "",

@@ -17,3 +17,4 @@ node_modules
 ignition/deployments
 /deployments
 gas-report.txt
+.solhint.json
