@@ -4,6 +4,19 @@
     <title>Fund Me App</title>
 </head>
 <body>
-    
+    Fund Me
+
+    <script>
+        async function connect () {
+            if (typeof window.ethereum !== undefined) {
+                await window.ethereum.request({ method: "eth_requestAccounts" })
+                document.getElementById("connect").innerHTML = "Connected!"
+            } else {
+                document.getElementById("connect").innerHTML = "Please install metamask"
+            }
+        }
+    </script>
+
+    <button id="connect" onclick="connect()">Connect</button>
 </body>
 </html>
