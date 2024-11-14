@@ -3,8 +3,10 @@ import { abi, contractAddress } from "./constants.js";
 
 const connectButton = document.getElementById("connect");
 const fundButton = document.getElementById("fund");
+const balanceButton = document.getElementById("balance");
 connectButton.onclick = connect;
 fundButton.onclick = fund;
+balanceButton.onclick = getBalance;
 
 async function connect () {
     if (typeof window.ethereum !== undefined) {
@@ -19,6 +21,14 @@ async function connect () {
         console.log(accounts);
     } else {
         document.getElementById("connectContainer").innerHTML = "Please install metamask";
+    }
+}
+
+async function getBalance () {
+    if (typeof window.ethereum !== undefined) {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const balance = await provider.getBalance(contractAddress);
+        console.log(`Balance: ${ethers.utils.formatEther(balance)} ETH`);    
     }
 }
 
