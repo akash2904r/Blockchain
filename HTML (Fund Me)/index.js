@@ -23,8 +23,8 @@ async function connect () {
 }
 
 async function fund () {
-    ethAmount = "1"
-    console.log(`Funding with ${ethAmount}...`);
+    const ethAmount = document.getElementById("ethAmount").value;
+    console.log(`Funding with ${ethAmount} ETH...`);
 
     if (typeof window.ethereum !== undefined) {
         /** Requirements inorder to call fund method:
