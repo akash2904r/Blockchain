@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
+// import "@chainlink/contracts/src/v0.8/VRFConsumerBaseV2.sol";
+
 error Raffle__NotEnoughETH();
 
 contract Raffle {
@@ -8,6 +10,9 @@ contract Raffle {
     address payable[] private s_players;
 
     // Good Practice: Name events with the function name reversed
+    // An event can have utmost 3 indexed variables
+    // Indexed variables are also called as topics
+    // Indexed variables are easy to get, but inorder to get the other data we might need the contract abi
     event RaffleEnter(address indexed player);
 
     constructor (uint256 entranceFee) {
