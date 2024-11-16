@@ -8,6 +8,11 @@ import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
 error Raffle__NotEnoughETH();
 error Raffle__TransferFailed();
 error Raffle__NotOpen();
+error Raffle__UpkeepNotNeeded(
+    uint256 currentBalance,
+    uint256 numPlayers,
+    uint256 raffleState
+);
 
 contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
     enum RaffleState { OPEN, CALCULATING }
@@ -69,8 +74,9 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
            3. Our subscription is to be funded with LINK Tokens
            4. The lottery should be in 'open' state
      */
-    function checkUpkeep(bytes calldata /* checkData */) 
-        external 
+    function checkUpkeep(bytes memory /* checkData */) 
+        public 
+        view
         override 
         returns(bool upkeepNeeded, bytes memory /* performData */) 
     {
@@ -81,10 +87,19 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
         upkeepNeeded = (isOpen && timePassed && hasPlayers && hasBalance);
     }
 
-    function requestRandomWinner() external {
+    function performUpkeep(bytes calldata /* performData */) external override {
         // Request a random number
         // After receiving it, do something with it
         // 2 transaction process
+        (bool upkeepNeeded, ) = checkUpkeep("");
+        if (!upkeepNeeded) {
+            revert Raffle__UpkeepNotNeeded(
+                address(this).balance,
+                s_players.length,
+                uint256(s_raffleState)
+            );
+        }
+
         s_raffleState = RaffleState.CALCULATING;
         uint256 requestId = i_vrfCoordinator.requestRandomWords(
             i_gasLane, // The maximum gas price you are willing to pay for a request in wei
@@ -113,6 +128,7 @@ contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
         s_recentWinner = recentWinner;
         s_raffleState = RaffleState.OPEN;
         s_players = new address payable[](0);
+        s_lastTimeStamp = block.timestamp;
         // Sending the money to the recent winner
         (bool success, ) = recentWinner.call{ value: address(this).balance }("");
         if (!success) revert Raffle__TransferFailed();
