@@ -5,6 +5,7 @@ import "@chainlink/contracts/src/v0.8/dev/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
 
 error Raffle__NotEnoughETH();
+error Raffle__TransferFailed();
 
 contract Raffle is VRFConsumerBaseV2 {
     uint256 private immutable i_entranceFee;
@@ -16,12 +17,15 @@ contract Raffle is VRFConsumerBaseV2 {
     uint16 private constant REQUEST_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
 
+    address private s_recentWinner;
+
     // Good Practice: Name events with the function name reversed
     // An event can have utmost 3 indexed variables
     // Indexed variables are also called as topics
     // Indexed variables are easy to get, but inorder to get the other data we might need the contract abi
     event RaffleEnter(address indexed player);
     event RequestedRaffleWinner(uint256 indexed requestId);
+    event WinnerPicked(address indexed winner);
 
     constructor (
         address vrfCoordinatorV2, 
@@ -60,7 +64,26 @@ contract Raffle is VRFConsumerBaseV2 {
         emit RequestedRaffleWinner(requestId);
     }
 
-    function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords) internal override {}
+    function fulfillRandomWords(
+        uint256 /* requestId */, 
+        uint256[] memory randomWords
+    ) internal override {
+        /*
+            Assuming the following are the data we have:
+            - s_players i.e., No. of players = 10
+            - The random number returned = 202
+            - Using the modulo operator we can choose a random winner i.e.,
+                =>    202 % 10 = 2
+            - The modulo operator always returns a value starting from 0 to 1 less than the right operand i.e., 0-9 (the array indeces)
+        */
+        uint256 indexOfWinner = randomWords[0] % s_players.length;
+        address payable recentWinner = s_players[indexOfWinner];
+        s_recentWinner = recentWinner;
+        // Sending the money to the recent winner
+        (bool success, ) = recentWinner.call{ value: address(this).balance }("");
+        if (!success) revert Raffle__TransferFailed();
+        emit WinnerPicked(recentWinner);
+    }
 
     function getEntranceFee() public view returns(uint256) {
         return i_entranceFee;
@@ -68,5 +91,9 @@ contract Raffle is VRFConsumerBaseV2 {
 
     function getPlayer(uint256 index) public view returns(address) {
         return s_players[index];
+    }
+
+    function getRecentWinner() public view returns(address) {
+        return s_recentWinner;
     }
 }
