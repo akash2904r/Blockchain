@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.7;
 
-import "@chainlink/contracts/src/v0.8/dev/VRFConsumerBaseV2.sol";
+import "@chainlink/contracts/src/v0.8/vrf/VRFConsumerBaseV2.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/VRFCoordinatorV2Interface.sol";
-import "@chainlink/contracts/src/v0.8/interfaces/KeeperCompatibleInterface.sol";
+import "@chainlink/contracts/src/v0.8/automation/interfaces/AutomationCompatibleInterface.sol";
 
 /* Errors */
 error Raffle__NotEnoughETH();
@@ -20,7 +20,7 @@ error Raffle__UpkeepNotNeeded(
  *  @notice This contract is for creating an untamperable decentralized smart contract
  *  @dev This contract implements Chainlink VRF v2 and Chainlink Keepers
  */
-contract Raffle is VRFConsumerBaseV2, KeeperCompatibleInterface {
+contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
     /* Enums */
     enum RaffleState { OPEN, CALCULATING }
 
