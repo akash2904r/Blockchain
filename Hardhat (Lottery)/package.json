@@ -13,7 +13,7 @@
     "solidity-coverage": "^0.8.13"
   },
   "dependencies": {
-    "@chainlink/contracts": "^0.3.1",
+    "@chainlink/contracts": "^0.8.0",
     "dotenv": "^16.4.5"
   }
 }
