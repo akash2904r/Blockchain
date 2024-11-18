@@ -52,4 +52,39 @@ const { developmentChains, networkConfig } = require("../../helper-hardhat-confi
                 await expect(raffle.enterRaffle({ value: raffleEntranceFee })).to.be.revertedWith("Raffle__NotOpen");
             })
         })
+
+        describe("checkUpkeep", function () {
+            it("Returns false if ETH isn't sent", async function () {
+                await network.provider.send("evm_increaseTime", [interval.toNumber() + 1]);
+                await network.provider.send("evm_mine", []);
+                // By using raffle.callStatic.checkUpkeep() instead of raffle.checkUpkeep()
+                // We can get the return value even though the method might not be a view function
+                const { upkeepNeeded } = await raffle.callStatic.checkUpkeep([]);
+                assert(!upkeepNeeded);
+            })
+            it("Returns false if raffle isn't open", async function () {
+                await raffle.enterRaffle({ value: raffleEntranceFee });
+                await network.provider.send("evm_increaseTime", [interval.toNumber() + 1]);
+                await network.provider.send("evm_mine", []);
+                await raffle.performUpkeep([]);
+                const raffleState = await raffle.getRaffleState();
+                const { upkeepNeeded } = await raffle.callStatic.checkUpkeep([]);
+                assert.equal(raffleState.toString(), "1");
+                assert.equal(upkeepNeeded, false);
+            })
+            it("Returns false if enough time isn't passed", async function () {
+                await raffle.enterRaffle({ value: raffleEntranceFee });
+                await network.provider.send("evm_increaseTime", [interval.toNumber() - 5]);
+                await network.provider.send("evm_mine", []);
+                const { upkeepNeeded } = await raffle.callStatic.checkUpkeep([]);
+                assert(!upkeepNeeded);
+            })
+            it("Returns true if enough time has passed, has players, eth and is open", async function () {
+                await raffle.enterRaffle({ value: raffleEntranceFee });
+                await network.provider.send("evm_increaseTime", [interval.toNumber() + 1]);
+                await network.provider.send("evm_mine", []);
+                const { upkeepNeeded } = await raffle.callStatic.checkUpkeep([]);
+                assert(upkeepNeeded);
+            })
+        })
     })
