@@ -123,6 +123,7 @@ contract Raffle is VRFConsumerBaseV2, AutomationCompatibleInterface {
             i_callbackGasLimit, // The limit for how much gas to use for the callback request
             NUM_WORDS // How many random numbers we want
         );
+        // This is redundant!! Since the vrf coordinator already emits an event
         emit RequestedRaffleWinner(requestId);
     }
 
