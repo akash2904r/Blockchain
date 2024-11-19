@@ -43,5 +43,10 @@ module.exports = {
     player: {
       default: 1,
     },
+  },
+  // Sets the maximum time a test would need to execute
+  // If exceeds the specified time, then it is considered as a failure
+  mocha: {
+    timeout: 300000, // 300 seconds max
   }
 };
