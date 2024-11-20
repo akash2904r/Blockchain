@@ -28,7 +28,16 @@ module.exports = {
       accounts: [PRIVATE_KEY],
     }
   },
-  solidity: "0.8.7",
+  solidity: {
+    compilers: [{ version: "0.8.7" }, { version: "0.4.24" }],
+  },
+  etherscan: {
+    apiKey: ETHERSCAN_API_KEY,
+  },
+  contractSizer: {
+    runOnCompile: false,
+    only: ["Raffle"],
+  },
   gasReporter: {
     enabled: false,
     currency: "USD",
