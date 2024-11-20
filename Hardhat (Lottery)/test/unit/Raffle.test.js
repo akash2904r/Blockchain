@@ -133,6 +133,7 @@ const { developmentChains, networkConfig } = require("../../helper-hardhat-confi
             // Mocks of chainlink keepers and vrf coordinator are used to kickoff this WinnerPicked event
             // All the assertions are done once the WinnerPicked event is fired
             it("Picks a winner, resets the lottery and sends money", async function () {
+                let winnerStartingBalance;
                 const additionalEntrances = 3;
                 const startingIndex = 1; // 0 --> deployer
                 const accounts = await ethers.getSigners();
@@ -179,7 +180,7 @@ const { developmentChains, networkConfig } = require("../../helper-hardhat-confi
                         const tx = await raffle.performUpkeep([]);
                         const txReceipt = await tx.wait(1);
                         // Console log the recentWinner to find which account would be choosen as the winner
-                        const winnerStartingBalance = await accounts[1].getBalance();
+                        winnerStartingBalance = await accounts[1].getBalance();
                         // Mocking the Chainlink VRF Coordinators
                         await vrfCoordinatorV2Mock.fulfillRandomWords(txReceipt.events[1].args.requestId, raffle.address);
                     } catch (error) {
