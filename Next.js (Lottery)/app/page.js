@@ -1,7 +1,12 @@
+import { MoralisProvider } from "react-moralis"
+import ManualHeader from "@/components/ManualHeader";
+
 export default function Home() {
     return (
         <div>
-            Basic Setup Complete !!!
+            <MoralisProvider initializeOnMount={false}>
+                <ManualHeader />
+            </MoralisProvider>
         </div>
     );
 }
