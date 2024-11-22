@@ -1,4 +1,6 @@
-import { MoralisProvider } from "react-moralis"
+"use client";
+
+import { MoralisProvider } from "react-moralis";
 import ManualHeader from "@/components/ManualHeader";
 
 export default function Home() {
