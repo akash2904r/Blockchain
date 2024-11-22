@@ -1,5 +1,3 @@
-"use client";
-
 import { useMoralis } from "react-moralis";
 
 export default function ManualHeader() {
