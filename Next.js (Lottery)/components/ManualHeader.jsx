@@ -36,9 +36,9 @@ export default function ManualHeader() {
             ) : (
                 <button 
                     onClick={async () => {
-                        await enableWeb3();
+                        const res = await enableWeb3();
                         // Locally setting a connected variable if connected to an wallet
-                        if (typeof window !== "undefined") {
+                        if (!res && typeof window !== "undefined") {
                             window.localStorage.setItem("connected", "injected");
                         }
                     }}
