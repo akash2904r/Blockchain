@@ -21,6 +21,9 @@ module.exports = {
       chainId: 31337,
       blockConfirmations: 1,
     },
+    localhost: {
+      chainId: 31337,
+    },
     sepolia: {
       chainId: 11155111,
       blockConfirmations: 6,
