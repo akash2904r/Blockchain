@@ -17,7 +17,7 @@ export default function LotteryEntrance() {
     const [recentWinner, setRecentWinner] = useState("0");
 
     // The runContractFunction can both send transactions and read state
-    const { runContractFunction: enterRaffle } = useWeb3Contract({
+    const { runContractFunction: enterRaffle, isLoading, isFetching } = useWeb3Contract({
         abi,
         contractAddress: raffleAddress,
         functionName: "enterRaffle",
@@ -67,7 +67,6 @@ export default function LotteryEntrance() {
             message: "Transaction Complete!",
             title: "Tx Notification",
             position: "topR",
-            icon: "bell"
         });
     }
     
@@ -84,7 +83,11 @@ export default function LotteryEntrance() {
     return (
         <div>
             {raffleAddress ? (
-                <>
+                <div className="text-white p-5">
+                    <div className="flex flex-col gap-5 mb-3.5">
+                        <span className="text-5xl text-[#ab8b74] font-bold">Don't just wait for luck - create it!</span>
+                        <span className="text-xl text-[#a57373] font-medium">Step into the Raffle - Your chance to win big is just one click away! Enter now and let the odds decide your fortune when the conditions align! Dream big, win bigger!</span>
+                    </div>
                     <button
                         onClick={async function () {
                             await enterRaffle({
@@ -93,11 +96,30 @@ export default function LotteryEntrance() {
                                 onError: (error) => console.log(error)
                             });
                         }}
-                    >Enter Raffle</button>
-                    <div>Entrance Fee: {ethers.utils.formatUnits(entranceFee, "ether")} ETH</div>
-                    <div>Players: {numPlayers}</div>
-                    <div>Recent Winner: {recentWinner}</div>
-                </>
+                        disabled={isLoading || isFetching}
+                        className={`px-4 py-1.5 text-xl rounded-md font-semibold bg-blue-500 mb-5 ${(isLoading || isFetching) ? "cursor-default" : "hover:bg-blue-600"}`}
+                    >
+                        {isLoading || isFetching ? (
+                            <div className="animate-spin spinner-border h-6 w-6 border-t-2 border-r-2 rounded-full" />
+                        ): (
+                            <span>Enter Raffle</span>
+                        )}
+                    </button>
+                    <div className="mt-5 flex flex-col gap-1.5">
+                        <div>
+                            <span className="text-lg font-semibold text-gray-400">Entrance Fee:&nbsp;</span>
+                            <span>{ethers.utils.formatUnits(entranceFee, "ether")} ETH</span>
+                        </div>
+                        <div>
+                            <span className="text-lg font-semibold text-gray-400">Players:&nbsp;</span>
+                            <span>{numPlayers}</span>
+                        </div>
+                        <div>
+                            <span className="text-lg font-semibold text-gray-400">Recent Winner:&nbsp;</span>
+                            <span>{recentWinner}</span>
+                        </div>
+                    </div>
+                </div>
             ) : (
                 <div>No Raffle address detected</div>
             )}
