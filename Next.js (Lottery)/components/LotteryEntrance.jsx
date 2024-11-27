@@ -121,7 +121,7 @@ export default function LotteryEntrance() {
                     </div>
                 </div>
             ) : (
-                <div>No Raffle address detected</div>
+                <div className="text-white text-xl p-5 font-medium">Please connect to supported chain...</div>
             )}
         </div>
     );
